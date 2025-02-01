@@ -42,14 +42,18 @@
 ### [ 데이터 시각화 ]<br>
 - Heatmap<br>
 
-<img src="images/heatmap.png" width="800" height="480" />
+<img src="images/heatmap.png" width="800" height="800" />
 
 <br>
-</br>
+
+- Barplot<br>
+<img src="images/bar_plot.png" width="800" height="900" />
+
+<br>
 
 - Boxplot<br>
 
-<img src="images/box_plot.png" width="800" height="480" />
+<img src="images/box_plot.png" width="800" height="500" />
 
 <br>
 
