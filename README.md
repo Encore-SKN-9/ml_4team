@@ -20,7 +20,7 @@
 취업훈련을 받은 대졸자들의 취업 현황 예측
 
 ### [ 배경 ]<br>
-청년들의 취업률이 지속적으로 감소되는 추세에, 취업에 도움되는 정보를 제공하기 위하여 노동패널의 설문조사 응답을 분석하고 머신러닝을 활용하여 취업 가능성을 예측함으로써, 효과적인 취업 지원 전략을 수립하기 위한 프로그램을 제작
+청년들의 취업률이 지속적으로 감소하는 추세에, 취업에 도움되는 정보를 제공하기 위하여 노동패널의 설문조사 응답을 분석하고 머신러닝을 활용하여 취업 가능성을 예측함으로써 효과적인 취업 지원 전략을 수립하기 위한 프로그램을 제작
 
 <img src="images/news.headline.png" width="700" height="150" />
 
@@ -42,14 +42,19 @@
 ### [ 데이터 시각화 ]<br>
 - Heatmap<br>
 
-<img src="images/heatmap.png" width="800" height="480" />
+<img src="images/heatmap.png" width="800" height="800" />
 
 <br>
-</br>
+
+- Barplot<br>
+
+<img src="images/bar_plot.png" width="800" height="900" />
+
+<br>
 
 - Boxplot<br>
 
-<img src="images/box_plot.png" width="800" height="480" />
+<img src="images/box_plot.png" width="800" height="500" />
 
 <br>
 
@@ -122,8 +127,23 @@ lgbm_clf = LGBMClassifier(n_estimators=1500, learning_rate=0.1, random_state=0)
 <br>
 
 5) Foldvalidation 결과로 모델 선정 ->  RandomForest 모델이 가장 우수함
+```python
+DecisionTree 정확도: 0.6995951709679751
+DecisionTree 정밀도: 0.7512877969279211
+DecisionTree 재현율: 0.6994063543009145
 
-<img src="images/ml_accuracy.png" width="500" height="390" />
+RandomForest 정확도: 0.7757249550569872
+RandomForest 정밀도: 0.7861506110046139
+RandomForest 재현율: 0.88166643588162
+
+XGBoost 정확도: 0.756156308119006
+XGBoost 정밀도: 0.7844645569174908
+XGBoost 재현율: 0.8393627120527526
+
+LightGBM 정확도: 0.7478630766963016
+LightGBM 정밀도: 0.7819028697159789
+LightGBM 재현율: 0.8310703810470927
+```
 
 <br>
 
@@ -143,7 +163,7 @@ lgbm_clf = LGBMClassifier(n_estimators=1500, learning_rate=0.1, random_state=0)
 
 <br/>
 
-# 📌 한줄회고 -> 필요할까요?
+# 📌 한줄 회고 -> 필요할까요?
 김우중👨‍💻 : <br>
 임수연👩‍💻 : <br>
 조민훈🧑‍💻 : <br>
