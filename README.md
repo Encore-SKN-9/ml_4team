@@ -45,12 +45,7 @@
 <img src="images/heatmap.png" width="800" height="800" />
 
 <br>
-
-- Barplot<br>
-
-<img src="images/bar_plot.png" width="800" height="900" />
-
-<br>
+</br>
 
 - Boxplot<br>
 
