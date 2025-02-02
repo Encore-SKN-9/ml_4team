@@ -47,20 +47,26 @@
 <br>
 </br>
 
+- Barplot<br>
+
+<img src="images/bar_plot.png" width="800" height="650" />
+
+<br>
+</br>
+
 - Boxplot<br>
 
 <img src="images/box_plot.png" width="800" height="500" />
 
 <br>
-
 </br>
 
 # 📍 데이터 전처리
-1) 숫자형 데이터는 결측값을 0, "모름" 을 최빈값으로 채움
+1) 18년도의 자격증 점수 관련 응답에만 문자와 숫자가 혼합되어 있어, 다른 연도와 통일 시키기 위해 문자를 삭제하고 모든 데이터의 결측값은 0으로 채워주었음
 ```python
-# 부모님의 자산규모 nan -> 0 and 모름 -> 평균값 3.01로 대체
-use_data['p036'].replace(-1, 3.01, inplace=True)
-use_data['p036'] = use_data['p036'].fillna(0)
+# 토익 점수 없으면 0, 18년도 문자형 변수 변경
+use_data['i033'] = use_data['i033'].fillna(0)
+use_data['i033'] = use_data['i033'].apply(lambda x: int(str(x)[2:-1]) if str(x)[0:1] == 'b' else int(x))
 ```
 <br>
 
@@ -76,30 +82,53 @@ use_data['p045'] = use_data['p045'].fillna(0)
 3) 고용여부와 상관관계를 보이지 않는 b코드 제거
 
 <img src="images/proBlem.png" width="500" height="450" />
+<img src="images/proBlem2.png" width="500" height="230" />
 
 <br>
 
-4) 유의미한 변수 확인 -> 그래프(+설명) 추가 해야함
+4) 유의미한 변수의 상관관계
+- 직업/교육 훈련 종료 여부: 훈련을 끝까지 마친 응답자의 취업률이 상대적으로 높음
 
-<img src="images/.png" width="500" height="500" />
+<img src='./images/hire_state by l009.png' width="500" height="400"/>
 
 <br>
 
-<br/>
+- 고등학교 계열: 3번(외고, 과학고, 국제고), 8번(특성화고)의 취업률이 높고,<br>
+4번(예술고, 체육고), 10번(방통고, 대안학교 등)의 취업률이 낮음
 
-# 📍 머신 러닝 (Machine Learning) -> 과정이 좀 더 상세했으면
+<img src='./images/hire_state by f009.png' width="500" height="400"/>
+
+<br>
+
+- 전공: 의약, 공학, 사회계열 순으로 높고 예체능이 가장 낮음
+
+<img src='./images/hire_state by major.png' width="500" height="400"/>
+
+<br>
+</br>
+
+# 📍 머신 러닝 (Machine Learning)
 ### [ 분석 순서 ]
 
 
-1) DecisionTree, RandomForest, XGBoost, LightGMB 4가지 모델 시도
+### 1) 기본모델<br>
+기본값으로 DecisionTree, RandomForest, XGBoost 3가지 모델을 시도한 결과
+
+<img src="images/train_test_acc.png" width="800" height="500" />
+
+
 <br>
 
-2) 위 모델 모두 약 0.7 정확도를 보여 혼동행렬 확인 결과, 전부 1로 분류됨을 확인<br>
-<img src="images/validation.png" width="400" height="140" />
+### 2) 평가<br>
+위 세가지 모델 모두 0.7 정도의 정확도를 보여 **혼동행렬** 확인 결과, 전부 1로 분류 되었음 <br>
+70% 대의 성능이 나오는 이유는 전부 y=1(취직함)으로 예측하기 때문으로 y값의 비율 차이로 발생 추정<br>
 
 <br>
 
-3) 오버샘플링을 통한 타겟 데이터의 갯수 균형 잡기
+### 3) 개선<br>
+타겟 데이터의 갯수 균형을 잡기 위하여 **오버샘플링** 시도<br>
+SMOTE는 가장 가까운 값 사이에 직선을 만들고 그  안에서 새로운 값을 뽑는 방식으로 범주형 변수에 맞지 않아서 RandomOverSampler 사용함
+
 ```python
 smt = SMOTE(random_state=42)
 X_new, y_new = smt.fit_resample(X, y)
@@ -112,7 +141,9 @@ X_res, y_res = ros.fit_resample(X, y)
 ```
 <br>
 
-4) 그리드 서치를 통한 모델의 최적 파라미터 탐색
+### 4) 최적화<br>
+최적의 하이퍼 파라미터를 선택하여 높은 정확도의 모델을 만들기 위해 **그리드 서치** 사용<br>
+
 ```python
 dt_clf = DecisionTreeClassifier(max_depth=25, random_state=0)
 rf_clf = RandomForestClassifier(max_depth=34, n_estimators=550, random_state=0)
@@ -120,8 +151,14 @@ xgb_clf = XGBClassifier(learning_rate=0.05, max_depth=23, n_estimators=800, rand
 lgbm_clf = LGBMClassifier(n_estimators=1500, learning_rate=0.1, random_state=0)
 ```
 <br>
+<br/>
 
-5) Foldvalidation 결과로 모델 선정 ->  RandomForest 모델이 가장 우수함
+# 📊 실제 예측 결과
+DecisionTree, RandomForest, XGBoost, LightGBM 4가지 모델의 최적 파라미터를 설정하고<br>
+5-foldvalidation을 이용하여 정확도, 정밀도, 재현율을 비교 하였을 때 RandomForest가 가장 우수한 성능을 보임
+
+<img src="images/line_score.png" width="800" height="600" />
+
 ```python
 DecisionTree 정확도: 0.6995951709679751
 DecisionTree 정밀도: 0.7512877969279211
@@ -144,12 +181,6 @@ LightGBM 재현율: 0.8310703810470927
 
 <br/>
 
-# 📊 실제 예측 결과 -> 예측 결과 필요
-
-<br>
-
-<br/>
-
 # 🎯 프로젝트 기대 효과
 - 청년 실업 문제 해결을 위한 데이터 기반 인사이트 제공
 - 구직자 맞춤형 취업 전략 수립 지원
@@ -157,8 +188,3 @@ LightGBM 재현율: 0.8310703810470927
 <br>
 
 <br/>
-
-# 📌 한줄 회고 -> 필요할까요?
-김우중👨‍💻 : <br>
-임수연👩‍💻 : <br>
-조민훈🧑‍💻 : <br>
